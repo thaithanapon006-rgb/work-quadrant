@@ -53,7 +53,7 @@ input:focus,select:focus{outline:none;border-color:var(--pur);background:#fff}
 button{font:inherit;font-weight:600;padding:14px 30px;border:0;border-radius:999px;background:linear-gradient(135deg,var(--org),var(--pink));color:#fff;cursor:pointer;margin-top:24px;box-shadow:0 8px 20px rgba(255,111,168,.35);font-size:17px}
 button:active{transform:scale(.97)}button:focus-visible{outline:3px solid #C9BCFA;outline-offset:2px}
 button.g{background:#fff;color:var(--pur);border:2px solid var(--pur);box-shadow:none;margin:14px 8px 0 0;padding:8px 20px;font-size:15px}
-#res{display:none}
+#res{display:none}.act{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:4px}.act button{margin:0}
 .hr{text-align:center;padding:30px 22px}.hr .big{font-size:52px;line-height:1.2}.hr .v{display:block;font-size:30px;font-weight:700;margin:4px 0}
 .dream{background:linear-gradient(135deg,#FFF1B8,#FFC8DD)}.learn{background:linear-gradient(135deg,#D4E8FF,#E3D6FF)}.cage{background:linear-gradient(135deg,#FFE0C7,#FFC2A8)}.danger{background:linear-gradient(135deg,#FFD0DA,#E7D2F5)}
 .tag{display:inline-block;background:#fff9;border-radius:999px;padding:2px 14px;font-size:14px;font-weight:500;margin:0 0 8px}
@@ -76,7 +76,7 @@ svg{width:100%;height:auto;display:block}svg text{font-family:inherit;fill:#4A46
 <div class="hero">
 <h1>งานของฉัน<br>อยู่ตรงไหน? ✨</h1>
 <p>ตอบประมาณ 6 นาที แล้วดูว่างานตอนนี้ “เงินดี” และ “งานดี” แค่ไหน คะแนนทั้งสองแกนอยู่ระหว่าง −10 ถึง +10 (0 = กลางๆ)</p>
-<span class="chip">🔒 ข้อมูลอยู่ในเครื่องคุณเท่านั้น ไม่ถูกส่งไปไหน</span>
+<span class="chip">🔒 ไม่เก็บและไม่ส่งข้อมูลใดๆ ปิดหน้านี้แล้วข้อมูลหายหมด</span>
 </div>
 
 <form id="f">
@@ -117,7 +117,6 @@ svg{width:100%;height:auto;display:block}svg text{font-family:inherit;fill:#4A46
 <div class="chk"><input type="checkbox" name="d" id="d1"><label for="d1">สภาพงานไม่ปลอดภัยต่อร่างกาย</label></div>
 <div class="chk"><input type="checkbox" name="d" id="d2"><label for="d2">เครียดหนักต่อเนื่องจนกระทบสุขภาพกายหรือใจ</label></div>
 <div class="chk"><input type="checkbox" name="d" id="d3"><label for="d3">จ่ายเงินล่าช้าหรือผิดกฎหมายแรงงาน</label></div>
-<label class="f">ตั้งชื่อผลนี้ (ไว้เทียบทีหลัง)<input type="text" name="lb" value="งานปัจจุบัน" maxlength="30"></label>
 <button type="submit">ดูผลของฉัน ✨</button>
 </section>
 </form>
@@ -159,8 +158,6 @@ function live(){
  $("over").style.display=left<0&&inc>0?"block":"none";$("over").textContent=`รายจ่ายมากกว่ารายได้ ${fm(-left)} บาทต่อเดือน`;
 }
 $("f").addEventListener("input",live);
-const load=()=>{try{return JSON.parse(localStorage.getItem("wq2")||"[]")}catch(e){return[]}};
-const save=a=>{try{localStorage.setItem("wq2",JSON.stringify(a))}catch(e){}};
 
 $("f").addEventListener("submit",e=>{
  e.preventDefault();
@@ -172,7 +169,6 @@ $("f").addEventListener("submit",e=>{
  const dims=D.map((d,i)=>{let s=0;d.q.forEach((_,j)=>s+=+f.get(`q${i}_${j}`));return{n:d.n,ic:DI[i],s:r1(s/3*5),w:+f.get("w"+i)}});
  const Y=r1(dims.reduce((a,d)=>a+d.s*d.w,0)/dims.reduce((a,d)=>a+d.w,0));
  const dbs=[...document.querySelectorAll("[name=d]:checked")].map(c=>c.nextElementSibling.textContent);
- const h=load();h.push({lb:f.get("lb")||"ไม่มีชื่อ",x:X,y:Y});save(h.slice(-8));
  window._l={X,Y,bx:r1(bx),adj,rate,inc,debt,need,life,left,res,m,mo,target,short,dims,dbs,rule:f.get("rule")};
  show(window._l);
 });
@@ -192,7 +188,7 @@ function show(o){
  <p>${Q[k][1]}</p>
  <div class="sc"><div><small>💰 การเงิน (X)</small><b>${sg(X)}</b></div><div><small>💼 คุณภาพงาน (Y)</small><b>${sg(Y)}</b></div></div></div>
  ${al}
- <div class="card">${chart()}</div>
+ <div class="card">${chart(o)}</div>
  <div class="card"><h2><span class="ic">💰</span>เรื่องเงินของคุณ</h2>
  <p class="note">ออมได้ 10% = 0 คะแนน ยิ่งออมมากยิ่งบวก ถ้าใช้เกินรายได้จะติดลบ</p>
  <div class="kv"><span>อัตราการออม</span><b>${rate.toFixed(1)}% · ${rl}</b></div>
@@ -214,22 +210,72 @@ function show(o){
  ${dims.map(d=>`<div class="bar"><span>${d.ic} ${d.n}</span><i><b class="${d.s<0?"n":""}" style="left:${d.s<0?50+d.s*5:50}%;width:${Math.abs(d.s)*5}%"></b></i><span>${sg(d.s)}</span></div>`).join("")}
  <h3 style="margin-top:22px">ด้านที่ดึงคะแนนลงมากที่สุด</h3>
  <p class="note" style="margin:0">คิดรวมความสำคัญที่คุณเลือกแล้ว: ${pull.map(d=>`${d.ic} ${d.n} (${sg(d.s)})`).join(" · ")}</p></div>
- <p class="note" style="padding:0 8px">ลองทำซ้ำทุก 3–6 เดือนเพื่อดูว่าขยับไหม เครื่องมือนี้ช่วยคิด ไม่ใช่คำแนะนำจากนักวางแผนการเงินหรือที่ปรึกษาอาชีพมืออาชีพ</p>
- <button class="g" onclick="scrollTo({top:0,behavior:'smooth'})">ทำใหม่</button><button class="g" onclick="if(confirm('ลบประวัติทั้งหมด?')){localStorage.removeItem('wq2');show(window._l)}">ล้างประวัติ</button>`;
+ <p class="note" style="padding:0 8px">ดาวน์โหลดผลเก็บไว้เทียบกับครั้งอื่นได้ (รูปไม่แสดงตัวเลขเงินจริง) ลองทำซ้ำทุก 3–6 เดือนเพื่อดูว่าขยับไหม เครื่องมือนี้ช่วยคิด ไม่ใช่คำแนะนำจากนักวางแผนการเงินหรือที่ปรึกษาอาชีพมืออาชีพ</p>
+ <div class="act"><button onclick="saveImg()">📥 ดาวน์โหลดผลเป็นรูป</button><button class="g" onclick="resetAll()">🔄 เริ่มใหม่</button></div>`;
  $("res").scrollIntoView({behavior:"smooth"});
 }
 
-function chart(){
- const h=load(),px=v=>200+v*16,py=v=>200-v*16;
+function chart(o){
+ const px=v=>200+v*16,py=v=>200-v*16;
  let s=`<svg viewBox="0 0 400 410" role="img" aria-label="กราฟการเงินเทียบคุณภาพงาน"><defs><clipPath id="c"><rect x="20" y="20" width="360" height="360" rx="24"/></clipPath></defs>
  <g clip-path="url(#c)"><rect x="20" y="20" width="180" height="180" fill="#DDEBFF"/><rect x="200" y="20" width="180" height="180" fill="#FFF1B8"/><rect x="20" y="200" width="180" height="180" fill="#FFD9E4"/><rect x="200" y="200" width="180" height="180" fill="#FFE0C7"/>
  <rect x="176" y="20" width="48" height="360" fill="#fff" opacity=".45"/><rect x="20" y="176" width="360" height="48" fill="#fff" opacity=".45"/></g>
  <line x1="200" y1="20" x2="200" y2="380" stroke="#fff" stroke-width="3"/><line x1="20" y1="200" x2="380" y2="200" stroke="#fff" stroke-width="3"/>
  <text x="110" y="52" text-anchor="middle" font-size="13" font-weight="600">🌱 งานดี การเงินยังอ่อน</text><text x="290" y="52" text-anchor="middle" font-size="13" font-weight="600">🌟 งานในฝัน</text><text x="110" y="364" text-anchor="middle" font-size="13" font-weight="600">⚠️ เขตอันตราย</text><text x="290" y="364" text-anchor="middle" font-size="13" font-weight="600">🔒 กรงทอง</text>
  <text x="20" y="400" font-size="12">−10</text><text x="380" y="400" text-anchor="end" font-size="12">+10</text><text x="200" y="402" text-anchor="middle" font-size="13" font-weight="600">การเงิน →</text>`;
- h.forEach((o,i)=>{const a=px(o.x),b=py(o.y),last=i==h.length-1,r=a>270;
-  s+=`<circle cx="${a}" cy="${b}" r="${last?10:6}" fill="${last?"#7B5CF0":"#B6AEDB"}" stroke="#fff" stroke-width="3"/><text x="${a+(r?-14:14)}" y="${b+4}" text-anchor="${r?"end":"start"}" font-size="13" font-weight="${last?600:400}">${E(o.lb)}</text>`});
- return s+`</svg><p class="note" style="margin:8px 0 0;text-align:center">แนวตั้ง = คุณภาพงาน ${h.length>1?"· จุดสีม่วงคือผลล่าสุด จุดสีจางคือผลก่อนหน้า":""}</p>`;
+ const a=px(o.X),b=py(o.Y),r=a>270;
+ s+=`<circle cx="${a}" cy="${b}" r="10" fill="#7B5CF0" stroke="#fff" stroke-width="3"/><text x="${a+(r?-16:16)}" y="${b+4}" text-anchor="${r?"end":"start"}" font-size="13" font-weight="600">คุณอยู่ตรงนี้</text>`;
+ return s+`</svg><p class="note" style="margin:8px 0 0;text-align:center">แนวนอน = การเงิน · แนวตั้ง = คุณภาพงาน</p>`;
+}
+function resetAll(){
+ if(!confirm("เริ่มใหม่และล้างคำตอบทั้งหมด?"))return;
+ $("f").reset();document.querySelectorAll(".w output").forEach(x=>x.value="3");
+ window._l=null;$("res").style.display="none";$("res").innerHTML="";live();scrollTo({top:0,behavior:"smooth"});
+}
+async function saveImg(){
+ const o=window._l;if(!o)return;
+ try{await document.fonts.load("700 40px Prompt");await document.fonts.load("400 28px Prompt")}catch(e){}
+ const W=1080,P=50,F="Prompt,system-ui,sans-serif",k=o.X>=0?(o.Y>=0?"dream":"cage"):(o.Y>=0?"learn":"danger");
+ const G={dream:["#FFF1B8","#FFC8DD"],learn:["#D4E8FF","#E3D6FF"],cage:["#FFE0C7","#FFC2A8"],danger:["#FFD0DA","#E7D2F5"]}[k];
+ const near=Math.abs(o.X)<1.5||Math.abs(o.Y)<1.5,strong=Math.abs(o.X)>=5&&Math.abs(o.Y)>=5;
+ const rl=o.rate<0?"ใช้เกินรายได้":o.rate<5?"ตึงมาก":o.rate<10?"เปราะบาง":o.rate<20?"พอไปได้ถึงดี":o.rate<30?"ดีมาก":"สุดยอด";
+ const rows=[["อัตราการออม",`${o.rate.toFixed(1)}% · ${rl}`],["เงินสำรองครอบคลุม",`${o.m>=99?"–":o.m.toFixed(1)+" เดือน"} (ควรมี ${o.mo} เดือน)`],["หนี้ต่อรายได้",`${(o.debt/o.inc*100).toFixed(1)}%`]];
+ if(o.dbs.length)rows.push(["🚨 สัญญาณอันตราย",`${o.dbs.length} ข้อ`]);
+ const yA=50,hA=430,yB=yA+hA+30,hB=730,yC=yB+hB+30,hC=100+rows.length*60,yD=yC+hC+30,hD=100+o.dims.length*62,H=yD+hD+130;
+ const cv=document.createElement("canvas");cv.width=W;cv.height=H;const c=cv.getContext("2d");
+ const rr=(x,y,w,h,r)=>{c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath()};
+ const T=(t,x,y,sz,wt,col,al)=>{c.font=`${wt} ${sz}px ${F}`;c.fillStyle=col;c.textAlign=al||"left";c.textBaseline="middle";c.fillText(t,x,y)};
+ const card=(y,h,fill)=>{c.save();c.shadowColor="rgba(90,70,160,.14)";c.shadowBlur=24;c.shadowOffsetY=8;rr(P,y,W-2*P,h,48);c.fillStyle=fill;c.fill();c.restore()};
+ c.fillStyle="#F1F0F8";c.fillRect(0,0,W,H);
+ const g=c.createLinearGradient(P,yA,W-P,yA+hA);g.addColorStop(0,G[0]);g.addColorStop(1,G[1]);card(yA,hA,g);
+ T(IC[k],W/2,yA+90,84,400,"#000","center");T(Q[k][0],W/2,yA+185,60,700,"#1E1B2E","center");
+ if(near||strong)T(near?"เฉียดเส้นแบ่ง ผลอาจเปลี่ยนได้":"ชัดเจนมาก",W/2,yA+240,26,500,"#4A4663","center");
+ const tw=(W-2*P-80-24)/2;
+ [["💰 การเงิน (X)",o.X],["💼 คุณภาพงาน (Y)",o.Y]].forEach((t,i)=>{const x=P+40+i*(tw+24);rr(x,yA+280,tw,120,28);c.fillStyle="#fff";c.fill();T(t[0],x+tw/2,yA+312,24,400,"#6B6880","center");T(sg(t[1]),x+tw/2,yA+365,54,700,"#7B5CF0","center")});
+ card(yB,hB,"#fff");
+ const px=(W-600)/2,py=yB+50,u=30;
+ c.save();rr(px,py,600,600,36);c.clip();
+ [["#DDEBFF",0,0],["#FFF1B8",300,0],["#FFD9E4",0,300],["#FFE0C7",300,300]].forEach(q=>{c.fillStyle=q[0];c.fillRect(px+q[1],py+q[2],300,300)});
+ c.fillStyle="rgba(255,255,255,.45)";c.fillRect(px+300-45,py,90,600);c.fillRect(px,py+300-45,600,90);
+ c.fillStyle="#fff";c.fillRect(px+298,py,4,600);c.fillRect(px,py+298,600,4);c.restore();
+ T("🌱 งานดี การเงินยังอ่อน",px+150,py+42,21,600,"#4A4663","center");T("🌟 งานในฝัน",px+450,py+42,21,600,"#4A4663","center");
+ T("⚠️ เขตอันตราย",px+150,py+558,21,600,"#4A4663","center");T("🔒 กรงทอง",px+450,py+558,21,600,"#4A4663","center");
+ const dx=px+300+o.X*u,dy=py+300-o.Y*u,right=dx>px+400;
+ c.beginPath();c.arc(dx,dy,17,0,7);c.fillStyle="#7B5CF0";c.fill();c.lineWidth=5;c.strokeStyle="#fff";c.stroke();
+ T("คุณอยู่ตรงนี้",dx+(right?-28:28),dy,24,600,"#1E1B2E",right?"right":"left");
+ T("แนวนอน = การเงิน · แนวตั้ง = คุณภาพงาน",W/2,py+640,22,400,"#6B6880","center");
+ card(yC,hC,"#fff");T("💰 เรื่องเงิน",P+40,yC+55,36,600,"#1E1B2E");
+ rows.forEach((r,i)=>{const y=yC+120+i*60;T(r[0],P+40,y,28,400,"#4A4663");T(r[1],W-P-40,y,28,600,"#1E1B2E","right");c.fillStyle="#E6E3F2";c.fillRect(P+40,y+30,W-2*P-80,2)});
+ card(yD,hD,"#fff");T("💼 คุณภาพงานรายด้าน",P+40,yD+55,36,600,"#1E1B2E");
+ const tx=570,tl=330,tm=tx+tl/2;
+ o.dims.forEach((d,i)=>{const y=yD+125+i*62;T(`${d.ic} ${d.n}`,P+40,y,25,400,"#4A4663");
+  rr(tx,y-8,tl,16,8);c.fillStyle="#EEEBF8";c.fill();
+  const w=Math.abs(d.s)/10*(tl/2),x0=d.s<0?tm-w:tm;
+  if(w>0){const gr=c.createLinearGradient(x0,0,x0+w,0);if(d.s<0){gr.addColorStop(0,"#E5484D");gr.addColorStop(1,"#FF8A3D")}else{gr.addColorStop(0,"#7B5CF0");gr.addColorStop(1,"#FF6FA8")}rr(x0,y-8,w,16,8);c.fillStyle=gr;c.fill()}
+  c.fillStyle="#fff";c.fillRect(tm-1,y-8,2,16);T(sg(d.s),W-P-40,y,27,600,"#1E1B2E","right")});
+ T(`งานของฉัน อยู่ตรงไหน? · ${new Date().toLocaleDateString("th-TH",{day:"numeric",month:"long",year:"numeric"})}`,W/2,H-80,26,500,"#4A4663","center");
+ T("เครื่องมือช่วยคิด ไม่ใช่คำแนะนำจากผู้เชี่ยวชาญ",W/2,H-42,22,400,"#6B6880","center");
+ cv.toBlob(b=>{const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="work-quadrant-result.png";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),4000)},"image/png");
 }
 </script>
 </body>
