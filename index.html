@@ -14,11 +14,14 @@ main{max-width:680px;margin:0 auto;padding:40px 20px 80px}
 h1{font-size:28px;line-height:1.3;margin:0 0 8px;font-weight:600}
 h2{font-size:19px;margin:48px 0 4px;font-weight:600}
 h3{font-size:16px;margin:28px 0 4px;font-weight:600}
-p.lead,.note{color:var(--mute);margin:0 0 16px}
+.lead,.note{color:var(--mute);margin:0 0 16px}.note{font-size:15px}
 section{border-top:1px solid var(--line)}
 label.f{display:block;margin:14px 0 0;font-weight:500}
+.hint{display:block;font-weight:400;color:var(--mute);font-size:14px}
 input[type=number],input[type=text],select{width:100%;padding:10px 12px;font:inherit;border:1px solid var(--line);background:var(--card);border-radius:4px;margin-top:4px}
 input:focus-visible,select:focus-visible,button:focus-visible,.s input:focus-visible+span{outline:2px solid var(--acc);outline-offset:2px}
+.r{display:grid;grid-template-columns:1fr 130px 70px;gap:10px;align-items:center;margin:8px 0}.r b{text-align:right;font-weight:500}.r input{margin:0}
+.over{display:none;border-left:3px solid var(--warn);padding:6px 12px;background:var(--card);color:var(--warn);margin:10px 0}
 .q{margin:18px 0}.q p{margin:0 0 6px}
 .s{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
 .s label{cursor:pointer}.s input{position:absolute;opacity:0}
@@ -31,47 +34,54 @@ button{font:inherit;font-weight:500;padding:12px 22px;border:0;border-radius:4px
 button.g{background:transparent;color:var(--acc);border:1px solid var(--acc);margin:12px 8px 0 0;padding:8px 14px}
 #res{display:none}
 .verdict{font-size:24px;font-weight:600;margin:6px 0}
-.alert{border-left:3px solid var(--warn);padding:8px 14px;background:#fff;color:var(--warn);margin:14px 0}
-.bar{display:grid;grid-template-columns:150px 1fr 36px;gap:10px;align-items:center;margin:6px 0;font-size:15px}
-.bar i{display:block;height:8px;background:var(--line);border-radius:4px;overflow:hidden}.bar b{display:block;height:100%;background:var(--acc)}
+.alert{border-left:3px solid var(--warn);padding:8px 14px;background:var(--card);color:var(--warn);margin:14px 0}
+.bar{display:grid;grid-template-columns:150px 1fr 40px;gap:10px;align-items:center;margin:6px 0;font-size:15px}
+.bar i{display:block;height:8px;background:var(--line);border-radius:4px;position:relative}.bar b{position:absolute;top:0;height:100%;background:var(--acc);border-radius:4px}
+.bar b.n{background:var(--warn)}
 svg{width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:4px}
 svg text{font-family:inherit;fill:var(--mute)}
-table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left;font-weight:400}
-@media(max-width:480px){.bar{grid-template-columns:110px 1fr 32px}.w input{width:100px}}
+table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left;font-weight:400}th{color:var(--mute);font-size:14px}
+.bad{color:var(--warn)}
+@media(max-width:480px){.bar{grid-template-columns:110px 1fr 40px}.w input{width:100px}.r{grid-template-columns:1fr 100px 60px}}
 </style>
 </head>
 <body>
 <main>
 <h1>งานของฉันอยู่ตรงไหน</h1>
-<p class="lead">แบบสอบถามประมาณ 5 นาที เพื่อดูว่างานปัจจุบันของคุณอยู่ตรงไหนระหว่างแกนรายได้ (แนวนอน) กับคุณภาพงาน (แนวตั้ง) ข้อมูลทั้งหมดประมวลผลในเบราว์เซอร์ของคุณ ไม่ถูกส่งไปที่ไหน</p>
+<p class="lead">แบบสอบถามประมาณ 6 นาที เพื่อดูว่างานปัจจุบันอยู่ตรงไหนระหว่างแกนความแข็งแรงทางการเงิน (X) กับคุณภาพงาน (Y) ทั้งสองแกนมีคะแนนตั้งแต่ −10 ถึง +10 โดย 0 คือจุดกลาง ข้อมูลประมวลผลในเบราว์เซอร์ของคุณเท่านั้น</p>
 
 <form id="f">
 <section>
-<h2>1. รายได้</h2>
-<p class="note">คะแนนรายได้ไม่ได้ดูแค่ตัวเลข แต่รวมสามส่วน: อัตราการออม (50%) เทียบตลาด (25%) และความรู้สึกว่าพอใช้ (25%)</p>
-<label class="f">รายได้ต่อเดือนหลังหักภาษีและประกันสังคม (บาท)<input type="number" name="inc" min="1" required></label>
-<label class="f">รายจ่ายรวมต่อเดือน (บาท) รวมค่าผ่อนหนี้ทุกอย่าง<input type="number" name="exp" min="0" required></label>
-<label class="f">เทียบกับคนตำแหน่งและประสบการณ์เท่ากัน รายได้ของคุณ
-<select name="mk" required><option value="">เลือก</option><option value="1">ต่ำกว่าตลาดมาก</option><option value="2">ต่ำกว่าตลาดเล็กน้อย</option><option value="3">ใกล้เคียงตลาด</option><option value="4">สูงกว่าตลาดเล็กน้อย</option><option value="5">สูงกว่าตลาดมาก</option></select></label>
-<label class="f">รายได้นี้พอกับชีวิตที่คุณอยากมีแค่ไหน
-<select name="su" required><option value="">เลือก</option><option value="1">ไม่พอแม้ค่าจำเป็น</option><option value="2">พอแค่ค่าจำเป็น</option><option value="3">พอใช้ มีเหลือบ้าง</option><option value="4">พอสบาย</option><option value="5">เกินพอ</option></select></label>
+<h2>1. การเงินรายเดือน</h2>
+<p class="note">ใช้ค่าเฉลี่ย 3 เดือนล่าสุด รายจ่ายรายปี (เช่น เบี้ยประกัน ภาษีรถ) ให้หาร 12 แล้วรวมในค่าจำเป็น ถ้าไม่มีหนี้ใส่ 0</p>
+<label class="f">รายได้สุทธิต่อเดือน (บาท) หลังหักภาษี ประกันสังคม และอื่นๆ แล้ว คือ 100%<input type="number" name="inc" min="1" required></label>
+<div class="r"><label for="debt">หนี้ประจำ<span class="hint">บัตรเครดิต ผ่อนรถ ผ่อนมือถือ ผ่อนบ้าน</span></label><input id="debt" type="number" name="debt" min="0" required><b id="p_debt">–</b></div>
+<div class="r"><label for="need">ค่าใช้จ่ายจำเป็น<span class="hint">ที่พัก อาหาร เดินทาง น้ำไฟ ส่งเงินครอบครัว ประกัน</span></label><input id="need" type="number" name="need" min="0" required><b id="p_need">–</b></div>
+<div class="r"><label for="life">ไลฟ์สไตล์<span class="hint">เที่ยว กินข้าวนอกบ้าน ช้อปปิ้ง สมัครสมาชิก</span></label><input id="life" type="number" name="life" min="0" required><b id="p_life">–</b></div>
+<div class="r"><span><b style="text-align:left">ออมและลงทุน (ส่วนที่เหลือ)</b></span><span></span><b id="p_save">–</b></div>
+<div class="over" id="over"></div>
+<label class="f">ชุดสัดส่วนเป้าหมายที่ใช้เทียบ
+<select name="rule"><option value="std">มาตรฐาน: หนี้+จำเป็น ≤50%, ไลฟ์สไตล์ ≤30%, ออม ≥20%</option><option value="low">รายได้น้อย/ค่าครองชีพสูง: หนี้+จำเป็น ≤65%, ไลฟ์สไตล์ ≤20%, ออม ≥15%</option></select></label>
+<label class="f">สถานการณ์ของคุณ (กำหนดเงินสำรองที่ควรมี)
+<select name="mo"><option value="3">พนักงานประจำ รายได้คงที่ ไม่มีคนในอุปการะ: 3 เดือน</option><option value="6">มีคนในอุปการะ หรือเป็นรายได้หลักของบ้าน: 6 เดือน</option><option value="12">ฟรีแลนซ์/รายได้ไม่แน่นอน: 12 เดือน</option></select></label>
+<label class="f">เงินสำรองที่มีอยู่ตอนนี้ (บาท)<span class="hint">นับเฉพาะเงินที่ถอนใช้ได้ภายใน 1–3 วัน เช่น เงินฝาก กองทุนตลาดเงิน ไม่นับกองทุนหุ้น กองทุนเกษียณ หรือเงินที่ติดล็อก</span><input type="number" name="res" min="0" required></label>
 </section>
 
 <section>
 <h2>2. สิ่งที่คุณให้ความสำคัญ</h2>
-<p class="note">เลื่อนตามความสำคัญต่อคุณ (1 = สำคัญน้อย, 5 = สำคัญมาก) ด้านที่สำคัญมากจะมีผลต่อคะแนนคุณภาพงานมากขึ้น</p>
+<p class="note">1 = สำคัญน้อย, 5 = สำคัญมาก ด้านที่สำคัญมากจะมีผลต่อคะแนนคุณภาพงานมากขึ้น</p>
 <div id="ws"></div>
 </section>
 
 <section>
 <h2>3. คุณภาพงาน</h2>
-<p class="note">ตอบตามที่เป็นจริงในช่วง 1–3 เดือนที่ผ่านมา เลือก 1 = ไม่จริงเลย ถึง 5 = จริงมาก</p>
+<p class="note">ตอบตามจริงในช่วง 1–3 เดือนที่ผ่านมา −2 = ไม่จริงเลย, −1 = ค่อนข้างไม่จริง, 0 = กลางๆ, +1 = ค่อนข้างจริง, +2 = จริงมาก</p>
 <div id="qs"></div>
 </section>
 
 <section>
 <h2>4. เกณฑ์ที่ไม่ควรยอมรับ</h2>
-<p class="note">ติ๊กเฉพาะข้อที่เกิดขึ้นจริง ข้อเหล่านี้จะถูกเตือนแยกจากคะแนน</p>
+<p class="note">ติ๊กเฉพาะข้อที่เกิดขึ้นจริง จะถูกเตือนแยกจากคะแนน</p>
 <div class="chk"><input type="checkbox" name="d" id="d0"><label for="d0">ถูกคุกคามหรือล่วงละเมิดในที่ทำงาน</label></div>
 <div class="chk"><input type="checkbox" name="d" id="d1"><label for="d1">สภาพงานไม่ปลอดภัยต่อร่างกาย</label></div>
 <div class="chk"><input type="checkbox" name="d" id="d2"><label for="d2">เครียดหนักต่อเนื่องจนกระทบสุขภาพกายหรือใจ</label></div>
@@ -80,7 +90,6 @@ table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:6px 4px;b
 <button type="submit">ดูผล</button>
 </section>
 </form>
-
 <div id="res"></div>
 </main>
 
@@ -93,64 +102,89 @@ const D=[
 {n:"วัฒนธรรมองค์กร",q:["ผู้บริหารสื่อสารตรงไปตรงมาและโปร่งใส","การประเมินผลและเลื่อนตำแหน่งยุติธรรม ดูจากผลงาน","ฉันกล้าเสนอความเห็นหรือยอมรับความผิดพลาดโดยไม่กลัวถูกลงโทษ"]},
 {n:"การเติบโตและพัฒนา",q:["เส้นทางก้าวหน้าในองค์กรชัดเจนและเป็นไปได้จริง","ปีที่ผ่านมา ฉันได้เรียนรู้ทักษะใหม่ที่เอาไปต่อยอดได้","มีคนสอนงานหรือให้คำปรึกษาเมื่อฉันต้องการ"]},
 {n:"ความมั่นคงและสวัสดิการ",q:["ฉันมั่นใจในความมั่นคงของงานและองค์กรในอีก 1–2 ปี","ได้รับสิทธิตามกฎหมายและสัญญาครบ (ประกันสังคม ลาป่วย ลาพักร้อน)","สวัสดิการอื่น เช่น ประกันสุขภาพ ตรวจสุขภาพ เพียงพอกับที่ต้องการ"]},
-{n:"สุขภาพกายและใจ",q:["ส่วนใหญ่ฉันไม่เครียดหรือหมดไฟจนกระทบการนอนหรือสุขภาพ","เมื่อทำงานดี ฉันได้รับการยอมรับหรือคำชม","ฉันรู้สึกเป็นส่วนหนึ่งขององค์กร ไม่โดดเดี่ยว"]}];
+{n:"สุขภาพกายและใจ",q:["ส่วนใหญ่ฉันไม่เครียดหรือหมดไฟจนกระทบการนอนหรือสุขภาพ","เมื่อทำงานดี ฉันได้รับการยอมรับหรือคำชม","ฉันรู้สึกเป็นส่วนหนึ่งขององค์กร ไม่โดดเดี่ยว"]},
+{n:"ความหมายและความเข้ากับตัวตน",q:["งานนี้ตรงกับค่านิยมและสิ่งที่ฉันอยากเป็น","ฉันเห็นว่างานของฉันสร้างประโยชน์ให้ผู้อื่นหรือองค์กรได้จริง","สัปดาห์ที่ผ่านมา ฉันมีช่วงที่ทำงานแล้วรู้สึกมีพลังหรือภูมิใจ"]}];
 const Q={
-dream:["งานในฝัน","งานดีและรายได้ดี รักษาไว้ได้ ใช้โอกาสนี้ต่อยอด: สร้างเงินสำรอง 6 เดือน ลงทุนสม่ำเสมอ และเก็บส่วนรายได้ที่เพิ่มขึ้นอย่างน้อยครึ่งหนึ่ง"],
-learn:["งานดี รายได้ยังน้อย","สภาพงานดีแต่เงินยังไม่ถึง เหมาะกับช่วงสร้างทักษะ ตั้งเป้าชัดเจน เช่น ขึ้นเงินเดือนหรือเลื่อนตำแหน่งภายใน 12 เดือน และเริ่มรายได้เสริมถ้าทำได้ ระหว่างนี้ควบคุมรายจ่ายเพื่อให้มีเงินออม"],
-cage:["กรงทอง","เงินดีแต่งานกัดกร่อนคุณ ใช้เงินที่ได้สร้างทางออก: เก็บเงินสำรอง 6–12 เดือน ปิดหนี้ ระวังไม่ให้ไลฟ์สไตล์สูงขึ้นตามรายได้ แล้วหาโอกาสใหม่ในขณะที่ยังมีแรง"],
-danger:["เขตอันตราย","งานและเงินยังไม่ดีทั้งคู่ ลำดับแรกคือเงินสำรองและลดหนี้ดอกเบี้ยสูง จากนั้นอัปสกิลและสมัครงานควบคู่ไปด้วย ไม่ต้องรอพร้อมร้อยเปอร์เซ็นต์"]};
-const E=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
-const $=id=>document.getElementById(id);
+dream:["งานในฝัน","งานดีและการเงินแข็งแรง รักษาไว้และต่อยอด: เก็บเงินสำรองให้ครบ ลงทุนสม่ำเสมอ และเก็บส่วนรายได้ที่เพิ่มขึ้นอย่างน้อยครึ่งหนึ่ง"],
+learn:["งานดี การเงินยังไม่แข็งแรง","สภาพงานดีแต่การเงินยังเปราะบาง เหมาะกับช่วงสร้างทักษะ ตั้งเป้าขึ้นเงินเดือนหรือเลื่อนตำแหน่งภายใน 12 เดือน คุมรายจ่ายให้มีเงินออม และสร้างเงินสำรองก่อน"],
+cage:["กรงทอง","การเงินแข็งแรงแต่งานกัดกร่อนคุณ ใช้เงินที่ได้สร้างทางออก: เก็บเงินสำรองให้ครบ ปิดหนี้ ระวังไม่ให้ไลฟ์สไตล์สูงขึ้นตามรายได้ แล้วหาโอกาสใหม่ขณะที่ยังมีแรง"],
+danger:["เขตอันตราย","งานและการเงินยังไม่ดีทั้งคู่ ลำดับแรกคือเงินสำรองและลดหนี้ดอกเบี้ยสูง จากนั้นอัปสกิลและสมัครงานควบคู่ไปด้วย ไม่ต้องรอพร้อมร้อยเปอร์เซ็นต์"]};
+const R={std:{fix:50,life:30,sv:20},low:{fix:65,life:20,sv:15}};
+const P=[[-20,-10],[0,-6],[5,-3],[10,0],[20,4],[30,7],[50,10]];
+const $=id=>document.getElementById(id),E=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const r1=v=>Math.round(v*10)/10,sg=v=>(v>0?"+":"")+v,fm=v=>Math.round(v).toLocaleString("th-TH"),cl=v=>Math.min(10,Math.max(-10,v));
+const base=r=>{if(r<=-20)return -10;if(r>=50)return 10;for(let i=1;i<P.length;i++)if(r<=P[i][0]){const[a,b]=P[i-1],[c,d]=P[i];return b+(d-b)*(r-a)/(c-a)}};
 $("ws").innerHTML=D.map((d,i)=>`<label class="w"><span>${d.n}</span><input type="range" name="w${i}" min="1" max="5" value="3" oninput="this.nextElementSibling.value=this.value"><output>3</output></label>`).join("");
-$("qs").innerHTML=D.map((d,i)=>`<h3>${d.n}</h3>`+d.q.map((t,j)=>`<div class="q"><p>${t}</p><div class="s">${[1,2,3,4,5].map(v=>`<label><input type="radio" name="q${i}_${j}" value="${v}" required><span>${v}</span></label>`).join("")}</div><div class="ends"><span>ไม่จริงเลย</span><span>จริงมาก</span></div></div>`).join("")).join("");
+$("qs").innerHTML=D.map((d,i)=>`<h3>${d.n}</h3>`+d.q.map((t,j)=>`<div class="q"><p>${t}</p><div class="s">${[-2,-1,0,1,2].map(v=>`<label><input type="radio" name="q${i}_${j}" value="${v}" required><span>${sg(v)}</span></label>`).join("")}</div><div class="ends"><span>ไม่จริงเลย</span><span>จริงมาก</span></div></div>`).join("")).join("");
 
-const load=()=>{try{return JSON.parse(localStorage.getItem("wq")||"[]")}catch(e){return[]}};
-const save=a=>{try{localStorage.setItem("wq",JSON.stringify(a))}catch(e){}};
-const cl=(v,a,b)=>Math.min(b,Math.max(a,v));
+const nv=n=>+document.querySelector(`[name=${n}]`).value||0;
+function live(){
+ const inc=nv("inc"),left=inc-nv("debt")-nv("need")-nv("life");
+ ["debt","need","life"].forEach(k=>$("p_"+k).textContent=inc>0?(nv(k)/inc*100).toFixed(1)+"%":"–");
+ $("p_save").textContent=inc>0?`${fm(left)} บาท (${(left/inc*100).toFixed(1)}%)`:"–";
+ $("over").style.display=left<0&&inc>0?"block":"none";$("over").textContent=`รายจ่ายมากกว่ารายได้ ${fm(-left)} บาทต่อเดือน`;
+}
+$("f").addEventListener("input",live);
+const load=()=>{try{return JSON.parse(localStorage.getItem("wq2")||"[]")}catch(e){return[]}};
+const save=a=>{try{localStorage.setItem("wq2",JSON.stringify(a))}catch(e){}};
 
 $("f").addEventListener("submit",e=>{
  e.preventDefault();
- const f=new FormData(e.target),inc=+f.get("inc"),exp=+f.get("exp");
- const rate=(inc-exp)/inc*100,rs=cl(rate/30*100,0,100);
- const X=Math.round(.5*rs+.25*(f.get("mk")-1)/4*100+.25*(f.get("su")-1)/4*100);
- const dims=D.map((d,i)=>{let s=0;d.q.forEach((_,j)=>s+=(+f.get(`q${i}_${j}`)-1)/4*100);return{n:d.n,s:Math.round(s/3),w:+f.get("w"+i)}});
- const Y=Math.round(dims.reduce((a,d)=>a+d.s*d.w,0)/dims.reduce((a,d)=>a+d.w,0));
+ const f=new FormData(e.target),inc=+f.get("inc"),debt=+f.get("debt"),need=+f.get("need"),life=+f.get("life"),res=+f.get("res"),mo=+f.get("mo");
+ const left=inc-debt-need-life,rate=left/inc*100,fix=debt+need,m=fix>0?res/fix:99;
+ const adj=m<1?-2:m<3?-1:m<6?0:1,bx=base(rate),X=r1(cl(bx+adj));
+ const target=fix*mo,short=Math.max(0,target-res);
+ const dims=D.map((d,i)=>{let s=0;d.q.forEach((_,j)=>s+=+f.get(`q${i}_${j}`));return{n:d.n,s:r1(s/3*5),w:+f.get("w"+i)}});
+ const Y=r1(dims.reduce((a,d)=>a+d.s*d.w,0)/dims.reduce((a,d)=>a+d.w,0));
  const dbs=[...document.querySelectorAll("[name=d]:checked")].map(c=>c.nextElementSibling.textContent);
- const h=load();h.push({lb:f.get("lb")||"ไม่มีชื่อ",x:X,y:Y,t:Date.now()});save(h.slice(-8));
- show({X,Y,rate,dims,dbs});
+ const h=load();h.push({lb:f.get("lb")||"ไม่มีชื่อ",x:X,y:Y});save(h.slice(-8));
+ window._l={X,Y,bx:r1(bx),adj,rate,inc,debt,need,life,left,res,m,mo,target,short,dims,dbs,rule:f.get("rule")};
+ show(window._l);
 });
 
-function show({X,Y,rate,dims,dbs}){
- const k=(X>=50?(Y>=50?"dream":"cage"):(Y>=50?"learn":"danger")),near=Math.abs(X-50)<8||Math.abs(Y-50)<8;
- const rl=rate<0?"รายจ่ายมากกว่ารายได้":rate<5?"ตึงมาก":rate<10?"พอไปได้ แต่เปราะบาง":rate<20?"ดี":rate<30?"ดีมาก":"สุดยอด";
- const pull=[...dims].sort((a,b)=>(100-b.s)*b.w-(100-a.s)*a.w).slice(0,3);
- const r=$("res");r.style.display="block";
- r.innerHTML=`<section><h2>ผลของคุณ</h2>
- <p class="verdict">${Q[k][0]}</p>
- <p class="note">รายได้ ${X}/100 · คุณภาพงาน ${Y}/100${near?" · ใกล้เส้นแบ่ง ผลอาจเปลี่ยนได้เมื่อตอบต่างไปเล็กน้อย":""}</p>
+function show(o){
+ const{X,Y,rate,dims,dbs}=o,k=X>=0?(Y>=0?"dream":"cage"):(Y>=0?"learn":"danger");
+ const near=Math.abs(X)<1.5||Math.abs(Y)<1.5,strong=Math.abs(X)>=5&&Math.abs(Y)>=5;
+ const rl=rate<0?"ใช้เกินรายได้":rate<5?"ตึงมาก":rate<10?"เปราะบาง":rate<20?"พอไปได้ถึงดี":rate<30?"ดีมาก":"สุดยอด";
+ const rule=R[o.rule],p=v=>v/o.inc*100,fp=p(o.debt+o.need),lp=p(o.life),sp=p(o.left),dp=p(o.debt);
+ const st=(ok,t)=>`<span class="${ok?"":"bad"}">${t}</span>`;
+ const low=dims.filter(d=>d.s<-6),pull=[...dims].sort((a,b)=>(10-b.s)*b.w-(10-a.s)*a.w).slice(0,3);
+ const mths=o.left>0?Math.ceil(o.short/o.left):null;
+ $("res").style.display="block";
+ $("res").innerHTML=`<section><h2>ผลของคุณ</h2>
+ <p class="verdict">${Q[k][0]}${near?" (เฉียดเส้นแบ่ง)":strong?" (ชัดเจน)":""}</p>
+ <p class="note">การเงิน (X) ${sg(X)} · คุณภาพงาน (Y) ${sg(Y)}${near?" · อยู่ใกล้เส้นแบ่ง ผลอาจเปลี่ยนได้เมื่อตอบต่างไปเล็กน้อย":""}</p>
  ${dbs.length?`<div class="alert"><b>ข้อควรระวังแยกจากคะแนน</b><br>${dbs.map(E).join("<br>")}<br>ต่อให้คะแนนรวมสูง เรื่องเหล่านี้ควรได้รับการแก้ไขก่อน</div>`:""}
+ ${low.length?`<div class="alert"><b>ด้านที่ต่ำกว่า −6</b><br>${low.map(d=>`${d.n} (${sg(d.s)})`).join("<br>")}<br>ด้านเหล่านี้อาจถูกคะแนนรวมบังไว้ ควรให้ความสำคัญ</div>`:""}
  <p>${Q[k][1]}</p>
  ${chart()}
- <h3>อัตราการออมของคุณ</h3>
- <p>${rate.toFixed(1)}% (${rl}) คำนวณจาก (รายได้ − รายจ่าย) ÷ รายได้ × 100 เกณฑ์ที่ดีคือ 10–20% ขึ้นไป</p>
- <h3>คะแนนแต่ละด้าน</h3>
- ${dims.map(d=>`<div class="bar"><span>${d.n}</span><i><b style="width:${d.s}%"></b></i><span>${d.s}</span></div>`).join("")}
+ <h3>ที่มาของคะแนน X</h3>
+ <p>อัตราการออม ${rate.toFixed(1)}% (${rl}) = (รายได้ − รายจ่าย) ÷ รายได้ ได้คะแนนฐาน ${sg(o.bx)} โดยออม 10% = 0 ปรับตามเงินสำรอง ${sg(o.adj)} (ครอบคลุม ${o.m>=99?"ไม่มีรายจ่ายจำเป็น":o.m.toFixed(1)+" เดือน"}) รวมเป็น ${sg(X)}</p>
+ <h3>สัดส่วนรายจ่ายเทียบเป้าหมาย</h3>
+ <table><tr><th></th><th>ของคุณ</th><th>เป้าหมาย</th><th></th></tr>
+ <tr><td>หนี้ + จำเป็น</td><td>${fp.toFixed(1)}%</td><td>≤${rule.fix}%</td><td>${st(fp<=rule.fix,fp<=rule.fix?"ผ่าน":"เกิน")}</td></tr>
+ <tr><td>ไลฟ์สไตล์</td><td>${lp.toFixed(1)}%</td><td>≤${rule.life}%</td><td>${st(lp<=rule.life,lp<=rule.life?"ผ่าน":"เกิน")}</td></tr>
+ <tr><td>ออมและลงทุน</td><td>${sp.toFixed(1)}%</td><td>≥${rule.sv}%</td><td>${st(sp>=rule.sv,sp>=rule.sv?"ผ่าน":"ต่ำกว่า")}</td></tr></table>
+ <p class="note">สัดส่วนหนี้ต่อรายได้ ${dp.toFixed(1)}% — ${dp>40?"สูงมาก (เกิน 40%)":dp>30?"สูง (เกิน 30%)":"อยู่ในเกณฑ์ (ไม่เกิน 30%)"}</p>
+ <h3>เงินสำรอง</h3>
+ <p>ควรมี ${fm(o.target)} บาท (หนี้ + จำเป็น × ${o.mo} เดือน) · มีอยู่ ${fm(o.res)} บาท · ${o.short>0?`ขาดอีก ${fm(o.short)} บาท${mths?` ถ้าเก็บตามเงินออมปัจจุบันจะครบในราว ${mths} เดือน`:" และตอนนี้ยังไม่มีเงินเหลือเก็บ"}`:"ครบตามเป้าแล้ว"}</p>
+ <h3>คะแนนคุณภาพงานแต่ละด้าน (−10 ถึง +10)</h3>
+ ${dims.map(d=>`<div class="bar"><span>${d.n}</span><i><b class="${d.s<0?"n":""}" style="left:${d.s<0?50+d.s*5:50}%;width:${Math.abs(d.s)*5}%"></b></i><span>${sg(d.s)}</span></div>`).join("")}
  <h3>ด้านที่ดึงคะแนนลงมากที่สุด (คิดน้ำหนักความสำคัญแล้ว)</h3>
- <p>${pull.map(d=>`${d.n} (${d.s}/100)`).join(" · ")}</p>
- <p class="note">แนะนำให้เริ่มจากด้านเหล่านี้ก่อน และทำแบบสอบถามซ้ำใน 3–6 เดือนเพื่อดูว่าขยับไหม</p>
- <button class="g" onclick="scrollTo({top:0,behavior:'smooth'})">ทำใหม่</button><button class="g" onclick="if(confirm('ลบประวัติทั้งหมด?')){localStorage.removeItem('wq');show(window._l)}">ล้างประวัติ</button>
+ <p>${pull.map(d=>`${d.n} (${sg(d.s)})`).join(" · ")}</p>
+ <p class="note">ทำซ้ำใน 3–6 เดือนเพื่อดูว่าขยับไหม เครื่องมือนี้ช่วยคิด ไม่ใช่คำแนะนำจากนักวางแผนการเงินหรือที่ปรึกษาอาชีพมืออาชีพ</p>
+ <button class="g" onclick="scrollTo({top:0,behavior:'smooth'})">ทำใหม่</button><button class="g" onclick="if(confirm('ลบประวัติทั้งหมด?')){localStorage.removeItem('wq2');show(window._l)}">ล้างประวัติ</button>
  </section>`;
- window._l={X,Y,rate,dims,dbs};
- r.scrollIntoView({behavior:"smooth"});
+ $("res").scrollIntoView({behavior:"smooth"});
 }
 
 function chart(){
- const h=load(),p=v=>[40+v[0]*3.2,360-v[1]*3.2];
- let s=`<svg viewBox="0 0 400 400" role="img" aria-label="กราฟรายได้เทียบคุณภาพงาน"><rect x="40" y="40" width="320" height="320" fill="none" stroke="#D3D9DF"/><rect x="190" y="40" width="21" height="320" fill="#EEF1F4"/><rect x="40" y="190" width="320" height="21" fill="#EEF1F4"/><line x1="200" y1="40" x2="200" y2="360" stroke="#9AA4AE"/><line x1="40" y1="200" x2="360" y2="200" stroke="#9AA4AE"/>
- <text x="120" y="60" text-anchor="middle" font-size="12">งานดี เงินยังน้อย</text><text x="280" y="60" text-anchor="middle" font-size="12">งานในฝัน</text><text x="120" y="350" text-anchor="middle" font-size="12">เขตอันตราย</text><text x="280" y="350" text-anchor="middle" font-size="12">กรงทอง</text>
- <text x="200" y="385" text-anchor="middle" font-size="13">รายได้ →</text><text transform="translate(14 200) rotate(-90)" text-anchor="middle" font-size="13">คุณภาพงาน →</text>`;
- h.forEach((o,i)=>{const[a,b]=p([o.x,o.y]),last=i==h.length-1;
-  s+=`<circle cx="${a}" cy="${b}" r="${last?7:5}" fill="${last?"#1F3A5F":"#9AA4AE"}"/><text x="${a+(a>280?-10:10)}" y="${b-8}" text-anchor="${a>280?"end":"start"}" font-size="12" style="fill:${last?"#171C21":"#5C6670"}">${E(o.lb)}</text>`});
+ const h=load(),px=v=>200+v*16,py=v=>200-v*16;
+ let s=`<svg viewBox="0 0 400 400" role="img" aria-label="กราฟการเงินเทียบคุณภาพงาน"><rect x="40" y="40" width="320" height="320" fill="none" stroke="#D3D9DF"/><rect x="176" y="40" width="48" height="320" fill="#EEF1F4"/><rect x="40" y="176" width="320" height="48" fill="#EEF1F4"/><line x1="200" y1="40" x2="200" y2="360" stroke="#9AA4AE"/><line x1="40" y1="200" x2="360" y2="200" stroke="#9AA4AE"/>
+ <text x="120" y="60" text-anchor="middle" font-size="12">งานดี การเงินยังไม่แข็งแรง</text><text x="285" y="60" text-anchor="middle" font-size="12">งานในฝัน</text><text x="120" y="350" text-anchor="middle" font-size="12">เขตอันตราย</text><text x="285" y="350" text-anchor="middle" font-size="12">กรงทอง</text>
+ <text x="40" y="378" font-size="12">−10</text><text x="360" y="378" text-anchor="end" font-size="12">+10</text><text x="200" y="392" text-anchor="middle" font-size="13">การเงิน →</text><text transform="translate(14 200) rotate(-90)" text-anchor="middle" font-size="13">คุณภาพงาน →</text>`;
+ h.forEach((o,i)=>{const a=px(o.x),b=py(o.y),last=i==h.length-1,r=a>280;
+  s+=`<circle cx="${a}" cy="${b}" r="${last?7:5}" fill="${last?"#1F3A5F":"#9AA4AE"}"/><text x="${a+(r?-10:10)}" y="${b-8}" text-anchor="${r?"end":"start"}" font-size="12" style="fill:${last?"#171C21":"#5C6670"}">${E(o.lb)}</text>`});
  return s+"</svg>"+(h.length>1?`<p class="note">จุดสีเข้มคือผลล่าสุด จุดสีเทาคือผลก่อนหน้า (เก็บไว้ในเครื่องคุณเท่านั้น)</p>`:"");
 }
 </script>
