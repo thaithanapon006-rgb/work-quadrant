@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>งานของฉันอยู่ตรงไหน</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F6F7F8;--ink:#171C21;--mute:#5C6670;--line:#D3D9DF;--acc:#1F3A5F;--warn:#A6261C;--card:#fff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.7 "IBM Plex Sans Thai",system-ui,sans-serif}
+main{max-width:680px;margin:0 auto;padding:40px 20px 80px}
+h1{font-size:28px;line-height:1.3;margin:0 0 8px;font-weight:600}
+h2{font-size:19px;margin:48px 0 4px;font-weight:600}
+h3{font-size:16px;margin:28px 0 4px;font-weight:600}
+p.lead,.note{color:var(--mute);margin:0 0 16px}
+section{border-top:1px solid var(--line)}
+label.f{display:block;margin:14px 0 0;font-weight:500}
+input[type=number],input[type=text],select{width:100%;padding:10px 12px;font:inherit;border:1px solid var(--line);background:var(--card);border-radius:4px;margin-top:4px}
+input:focus-visible,select:focus-visible,button:focus-visible,.s input:focus-visible+span{outline:2px solid var(--acc);outline-offset:2px}
+.q{margin:18px 0}.q p{margin:0 0 6px}
+.s{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.s label{cursor:pointer}.s input{position:absolute;opacity:0}
+.s span{display:block;text-align:center;padding:8px 0;border:1px solid var(--line);background:var(--card);border-radius:4px}
+.s input:checked+span{background:var(--acc);color:#fff;border-color:var(--acc)}
+.ends{display:flex;justify-content:space-between;font-size:13px;color:var(--mute);margin-top:2px}
+.w{display:flex;align-items:center;gap:12px;margin:10px 0}.w span:first-child{flex:1}.w input{width:140px}.w output{width:20px;text-align:right;font-weight:600}
+.chk{display:flex;gap:10px;margin:8px 0;align-items:flex-start}.chk input{margin-top:7px}
+button{font:inherit;font-weight:500;padding:12px 22px;border:0;border-radius:4px;background:var(--acc);color:#fff;cursor:pointer;margin-top:28px}
+button.g{background:transparent;color:var(--acc);border:1px solid var(--acc);margin:12px 8px 0 0;padding:8px 14px}
+#res{display:none}
+.verdict{font-size:24px;font-weight:600;margin:6px 0}
+.alert{border-left:3px solid var(--warn);padding:8px 14px;background:#fff;color:var(--warn);margin:14px 0}
+.bar{display:grid;grid-template-columns:150px 1fr 36px;gap:10px;align-items:center;margin:6px 0;font-size:15px}
+.bar i{display:block;height:8px;background:var(--line);border-radius:4px;overflow:hidden}.bar b{display:block;height:100%;background:var(--acc)}
+svg{width:100%;height:auto;background:var(--card);border:1px solid var(--line);border-radius:4px}
+svg text{font-family:inherit;fill:var(--mute)}
+table{width:100%;border-collapse:collapse;font-size:15px}td,th{padding:6px 4px;border-bottom:1px solid var(--line);text-align:left;font-weight:400}
+@media(max-width:480px){.bar{grid-template-columns:110px 1fr 32px}.w input{width:100px}}
+</style>
+</head>
+<body>
+<main>
+<h1>งานของฉันอยู่ตรงไหน</h1>
+<p class="lead">แบบสอบถามประมาณ 5 นาที เพื่อดูว่างานปัจจุบันของคุณอยู่ตรงไหนระหว่างแกนรายได้ (แนวนอน) กับคุณภาพงาน (แนวตั้ง) ข้อมูลทั้งหมดประมวลผลในเบราว์เซอร์ของคุณ ไม่ถูกส่งไปที่ไหน</p>
+
+<form id="f">
+<section>
+<h2>1. รายได้</h2>
+<p class="note">คะแนนรายได้ไม่ได้ดูแค่ตัวเลข แต่รวมสามส่วน: อัตราการออม (50%) เทียบตลาด (25%) และความรู้สึกว่าพอใช้ (25%)</p>
+<label class="f">รายได้ต่อเดือนหลังหักภาษีและประกันสังคม (บาท)<input type="number" name="inc" min="1" required></label>
+<label class="f">รายจ่ายรวมต่อเดือน (บาท) รวมค่าผ่อนหนี้ทุกอย่าง<input type="number" name="exp" min="0" required></label>
+<label class="f">เทียบกับคนตำแหน่งและประสบการณ์เท่ากัน รายได้ของคุณ
+<select name="mk" required><option value="">เลือก</option><option value="1">ต่ำกว่าตลาดมาก</option><option value="2">ต่ำกว่าตลาดเล็กน้อย</option><option value="3">ใกล้เคียงตลาด</option><option value="4">สูงกว่าตลาดเล็กน้อย</option><option value="5">สูงกว่าตลาดมาก</option></select></label>
+<label class="f">รายได้นี้พอกับชีวิตที่คุณอยากมีแค่ไหน
+<select name="su" required><option value="">เลือก</option><option value="1">ไม่พอแม้ค่าจำเป็น</option><option value="2">พอแค่ค่าจำเป็น</option><option value="3">พอใช้ มีเหลือบ้าง</option><option value="4">พอสบาย</option><option value="5">เกินพอ</option></select></label>
+</section>
+
+<section>
+<h2>2. สิ่งที่คุณให้ความสำคัญ</h2>
+<p class="note">เลื่อนตามความสำคัญต่อคุณ (1 = สำคัญน้อย, 5 = สำคัญมาก) ด้านที่สำคัญมากจะมีผลต่อคะแนนคุณภาพงานมากขึ้น</p>
+<div id="ws"></div>
+</section>
+
+<section>
+<h2>3. คุณภาพงาน</h2>
+<p class="note">ตอบตามที่เป็นจริงในช่วง 1–3 เดือนที่ผ่านมา เลือก 1 = ไม่จริงเลย ถึง 5 = จริงมาก</p>
+<div id="qs"></div>
+</section>
+
+<section>
+<h2>4. เกณฑ์ที่ไม่ควรยอมรับ</h2>
+<p class="note">ติ๊กเฉพาะข้อที่เกิดขึ้นจริง ข้อเหล่านี้จะถูกเตือนแยกจากคะแนน</p>
+<div class="chk"><input type="checkbox" name="d" id="d0"><label for="d0">ถูกคุกคามหรือล่วงละเมิดในที่ทำงาน</label></div>
+<div class="chk"><input type="checkbox" name="d" id="d1"><label for="d1">สภาพงานไม่ปลอดภัยต่อร่างกาย</label></div>
+<div class="chk"><input type="checkbox" name="d" id="d2"><label for="d2">เครียดหนักต่อเนื่องจนกระทบสุขภาพกายหรือใจ</label></div>
+<div class="chk"><input type="checkbox" name="d" id="d3"><label for="d3">จ่ายเงินล่าช้าหรือผิดกฎหมายแรงงาน</label></div>
+<label class="f">ชื่อผลนี้ (เพื่อเทียบภายหลัง)<input type="text" name="lb" value="งานปัจจุบัน" maxlength="30"></label>
+<button type="submit">ดูผล</button>
+</section>
+</form>
+
+<div id="res"></div>
+</main>
+
+<script>
+const D=[
+{n:"สภาพแวดล้อมกายภาพ",q:["สถานที่ทำงานสะอาด ปลอดภัย แสงและเสียงไม่รบกวนการทำงาน","อุปกรณ์และเครื่องมือเพียงพอ ทำงานได้โดยไม่ติดขัด","การเดินทางไปกลับรับได้ ทั้งเวลาและค่าใช้จ่าย"]},
+{n:"เวลาและความยืดหยุ่น",q:["เดือนที่ผ่านมา ฉันเลิกงานตรงเวลาเป็นส่วนใหญ่ ไม่ต้องอยู่ต่อโดยไม่ได้ตั้งใจ","ฉันปรับเวลาหรือขอลาได้เมื่อมีธุระจำเป็น","หลังเลิกงาน ฉันมีเวลาและแรงเหลือให้ครอบครัว สุขภาพ หรือสิ่งที่ชอบ"]},
+{n:"ลักษณะงาน",q:["ฉันรู้ชัดว่าหน้าที่และสิ่งที่ถูกคาดหวังคืออะไร","ปริมาณงานเหมาะสมกับเวลาและกำลังคน","งานท้าทายพอ และฉันตัดสินใจเองในงานของฉันได้พอสมควร"]},
+{n:"ความสัมพันธ์ในที่ทำงาน",q:["หัวหน้ารับฟังและให้ฟีดแบ็กที่ชัดเจนและยุติธรรม","เพื่อนร่วมงานช่วยเหลือกันและทำงานเป็นทีมได้","ไม่มีการกลั่นแกล้งหรือเล่นการเมืองจนกระทบงานของฉัน"]},
+{n:"วัฒนธรรมองค์กร",q:["ผู้บริหารสื่อสารตรงไปตรงมาและโปร่งใส","การประเมินผลและเลื่อนตำแหน่งยุติธรรม ดูจากผลงาน","ฉันกล้าเสนอความเห็นหรือยอมรับความผิดพลาดโดยไม่กลัวถูกลงโทษ"]},
+{n:"การเติบโตและพัฒนา",q:["เส้นทางก้าวหน้าในองค์กรชัดเจนและเป็นไปได้จริง","ปีที่ผ่านมา ฉันได้เรียนรู้ทักษะใหม่ที่เอาไปต่อยอดได้","มีคนสอนงานหรือให้คำปรึกษาเมื่อฉันต้องการ"]},
+{n:"ความมั่นคงและสวัสดิการ",q:["ฉันมั่นใจในความมั่นคงของงานและองค์กรในอีก 1–2 ปี","ได้รับสิทธิตามกฎหมายและสัญญาครบ (ประกันสังคม ลาป่วย ลาพักร้อน)","สวัสดิการอื่น เช่น ประกันสุขภาพ ตรวจสุขภาพ เพียงพอกับที่ต้องการ"]},
+{n:"สุขภาพกายและใจ",q:["ส่วนใหญ่ฉันไม่เครียดหรือหมดไฟจนกระทบการนอนหรือสุขภาพ","เมื่อทำงานดี ฉันได้รับการยอมรับหรือคำชม","ฉันรู้สึกเป็นส่วนหนึ่งขององค์กร ไม่โดดเดี่ยว"]}];
+const Q={
+dream:["งานในฝัน","งานดีและรายได้ดี รักษาไว้ได้ ใช้โอกาสนี้ต่อยอด: สร้างเงินสำรอง 6 เดือน ลงทุนสม่ำเสมอ และเก็บส่วนรายได้ที่เพิ่มขึ้นอย่างน้อยครึ่งหนึ่ง"],
+learn:["งานดี รายได้ยังน้อย","สภาพงานดีแต่เงินยังไม่ถึง เหมาะกับช่วงสร้างทักษะ ตั้งเป้าชัดเจน เช่น ขึ้นเงินเดือนหรือเลื่อนตำแหน่งภายใน 12 เดือน และเริ่มรายได้เสริมถ้าทำได้ ระหว่างนี้ควบคุมรายจ่ายเพื่อให้มีเงินออม"],
+cage:["กรงทอง","เงินดีแต่งานกัดกร่อนคุณ ใช้เงินที่ได้สร้างทางออก: เก็บเงินสำรอง 6–12 เดือน ปิดหนี้ ระวังไม่ให้ไลฟ์สไตล์สูงขึ้นตามรายได้ แล้วหาโอกาสใหม่ในขณะที่ยังมีแรง"],
+danger:["เขตอันตราย","งานและเงินยังไม่ดีทั้งคู่ ลำดับแรกคือเงินสำรองและลดหนี้ดอกเบี้ยสูง จากนั้นอัปสกิลและสมัครงานควบคู่ไปด้วย ไม่ต้องรอพร้อมร้อยเปอร์เซ็นต์"]};
+const E=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const $=id=>document.getElementById(id);
+$("ws").innerHTML=D.map((d,i)=>`<label class="w"><span>${d.n}</span><input type="range" name="w${i}" min="1" max="5" value="3" oninput="this.nextElementSibling.value=this.value"><output>3</output></label>`).join("");
+$("qs").innerHTML=D.map((d,i)=>`<h3>${d.n}</h3>`+d.q.map((t,j)=>`<div class="q"><p>${t}</p><div class="s">${[1,2,3,4,5].map(v=>`<label><input type="radio" name="q${i}_${j}" value="${v}" required><span>${v}</span></label>`).join("")}</div><div class="ends"><span>ไม่จริงเลย</span><span>จริงมาก</span></div></div>`).join("")).join("");
+
+const load=()=>{try{return JSON.parse(localStorage.getItem("wq")||"[]")}catch(e){return[]}};
+const save=a=>{try{localStorage.setItem("wq",JSON.stringify(a))}catch(e){}};
+const cl=(v,a,b)=>Math.min(b,Math.max(a,v));
+
+$("f").addEventListener("submit",e=>{
+ e.preventDefault();
+ const f=new FormData(e.target),inc=+f.get("inc"),exp=+f.get("exp");
+ const rate=(inc-exp)/inc*100,rs=cl(rate/30*100,0,100);
+ const X=Math.round(.5*rs+.25*(f.get("mk")-1)/4*100+.25*(f.get("su")-1)/4*100);
+ const dims=D.map((d,i)=>{let s=0;d.q.forEach((_,j)=>s+=(+f.get(`q${i}_${j}`)-1)/4*100);return{n:d.n,s:Math.round(s/3),w:+f.get("w"+i)}});
+ const Y=Math.round(dims.reduce((a,d)=>a+d.s*d.w,0)/dims.reduce((a,d)=>a+d.w,0));
+ const dbs=[...document.querySelectorAll("[name=d]:checked")].map(c=>c.nextElementSibling.textContent);
+ const h=load();h.push({lb:f.get("lb")||"ไม่มีชื่อ",x:X,y:Y,t:Date.now()});save(h.slice(-8));
+ show({X,Y,rate,dims,dbs});
+});
+
+function show({X,Y,rate,dims,dbs}){
+ const k=(X>=50?(Y>=50?"dream":"cage"):(Y>=50?"learn":"danger")),near=Math.abs(X-50)<8||Math.abs(Y-50)<8;
+ const rl=rate<0?"รายจ่ายมากกว่ารายได้":rate<5?"ตึงมาก":rate<10?"พอไปได้ แต่เปราะบาง":rate<20?"ดี":rate<30?"ดีมาก":"สุดยอด";
+ const pull=[...dims].sort((a,b)=>(100-b.s)*b.w-(100-a.s)*a.w).slice(0,3);
+ const r=$("res");r.style.display="block";
+ r.innerHTML=`<section><h2>ผลของคุณ</h2>
+ <p class="verdict">${Q[k][0]}</p>
+ <p class="note">รายได้ ${X}/100 · คุณภาพงาน ${Y}/100${near?" · ใกล้เส้นแบ่ง ผลอาจเปลี่ยนได้เมื่อตอบต่างไปเล็กน้อย":""}</p>
+ ${dbs.length?`<div class="alert"><b>ข้อควรระวังแยกจากคะแนน</b><br>${dbs.map(E).join("<br>")}<br>ต่อให้คะแนนรวมสูง เรื่องเหล่านี้ควรได้รับการแก้ไขก่อน</div>`:""}
+ <p>${Q[k][1]}</p>
+ ${chart()}
+ <h3>อัตราการออมของคุณ</h3>
+ <p>${rate.toFixed(1)}% (${rl}) คำนวณจาก (รายได้ − รายจ่าย) ÷ รายได้ × 100 เกณฑ์ที่ดีคือ 10–20% ขึ้นไป</p>
+ <h3>คะแนนแต่ละด้าน</h3>
+ ${dims.map(d=>`<div class="bar"><span>${d.n}</span><i><b style="width:${d.s}%"></b></i><span>${d.s}</span></div>`).join("")}
+ <h3>ด้านที่ดึงคะแนนลงมากที่สุด (คิดน้ำหนักความสำคัญแล้ว)</h3>
+ <p>${pull.map(d=>`${d.n} (${d.s}/100)`).join(" · ")}</p>
+ <p class="note">แนะนำให้เริ่มจากด้านเหล่านี้ก่อน และทำแบบสอบถามซ้ำใน 3–6 เดือนเพื่อดูว่าขยับไหม</p>
+ <button class="g" onclick="scrollTo({top:0,behavior:'smooth'})">ทำใหม่</button><button class="g" onclick="if(confirm('ลบประวัติทั้งหมด?')){localStorage.removeItem('wq');show(window._l)}">ล้างประวัติ</button>
+ </section>`;
+ window._l={X,Y,rate,dims,dbs};
+ r.scrollIntoView({behavior:"smooth"});
+}
+
+function chart(){
+ const h=load(),p=v=>[40+v[0]*3.2,360-v[1]*3.2];
+ let s=`<svg viewBox="0 0 400 400" role="img" aria-label="กราฟรายได้เทียบคุณภาพงาน"><rect x="40" y="40" width="320" height="320" fill="none" stroke="#D3D9DF"/><rect x="190" y="40" width="21" height="320" fill="#EEF1F4"/><rect x="40" y="190" width="320" height="21" fill="#EEF1F4"/><line x1="200" y1="40" x2="200" y2="360" stroke="#9AA4AE"/><line x1="40" y1="200" x2="360" y2="200" stroke="#9AA4AE"/>
+ <text x="120" y="60" text-anchor="middle" font-size="12">งานดี เงินยังน้อย</text><text x="280" y="60" text-anchor="middle" font-size="12">งานในฝัน</text><text x="120" y="350" text-anchor="middle" font-size="12">เขตอันตราย</text><text x="280" y="350" text-anchor="middle" font-size="12">กรงทอง</text>
+ <text x="200" y="385" text-anchor="middle" font-size="13">รายได้ →</text><text transform="translate(14 200) rotate(-90)" text-anchor="middle" font-size="13">คุณภาพงาน →</text>`;
+ h.forEach((o,i)=>{const[a,b]=p([o.x,o.y]),last=i==h.length-1;
+  s+=`<circle cx="${a}" cy="${b}" r="${last?7:5}" fill="${last?"#1F3A5F":"#9AA4AE"}"/><text x="${a+(a>280?-10:10)}" y="${b-8}" text-anchor="${a>280?"end":"start"}" font-size="12" style="fill:${last?"#171C21":"#5C6670"}">${E(o.lb)}</text>`});
+ return s+"</svg>"+(h.length>1?`<p class="note">จุดสีเข้มคือผลล่าสุด จุดสีเทาคือผลก่อนหน้า (เก็บไว้ในเครื่องคุณเท่านั้น)</p>`:"");
+}
+</script>
+</body>
+</html>
